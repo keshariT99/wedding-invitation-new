@@ -440,6 +440,48 @@ body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
 .rsvp .seg.active{background:linear-gradient(180deg,var(--g4),var(--g3));color:#eafff1;border-color:transparent;box-shadow:0 8px 18px rgba(18,63,40,.3);}
 .rsvp input,.rsvp select{width:100%;padding:15px 16px;border-radius:14px;border:1px solid rgba(30,51,39,.18);background:rgba(255,255,255,.72);font-family:var(--serif);font-size:16px;color:var(--ink);}
 .rsvp input:focus,.rsvp select:focus{outline:none;border-color:var(--gold-1);box-shadow:0 0 0 3px rgba(217,180,95,.2);}
+.add-member{
+  margin-top:14px;
+  padding:10px 18px;
+  border:none;
+  border-radius:999px;
+  cursor:pointer;
+
+  background:linear-gradient(135deg,#b98a3e,#d9b45f);
+  color:#fff;
+
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:600;
+
+  transition:.25s;
+}
+
+.add-member:hover{
+  transform:translateY(-2px);
+}
+
+.family-row{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+.family-row input{
+  flex:1;
+}
+
+.remove-member{
+  width:42px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+
+  background:#a43a3a;
+  color:#fff;
+
+  font-size:18px;
+}
 .rsvp .submit{width:100%;padding:17px;margin-top:4px;border:none;border-radius:14px;background:linear-gradient(180deg,var(--gold-2),var(--gold-1));color:#3a2a0c;font-family:var(--sans);font-size:12px;letter-spacing:.28em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 22px rgba(185,138,62,.32);transition:transform .3s;}
 .rsvp .submit:hover{transform:translateY(-2px);}
 
@@ -643,27 +685,64 @@ body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
   <!-- 10 · RSVP -->
 
   <!-- RSVP -->
-  <section id="rsvp" class="light mainsec">
-    <div class="reveal">
-      <div class="eyebrow">Kindly Respond</div>
-      <h2 class="rsvp-t">Will you <em>celebrate</em> with us?</h2>
-      <div class="glass rsvp" id="rsvpCard">
-        <div class="fld"><span class="lbl">Will you attend?</span>
-          <div class="rrow"><button class="seg active" data-g="a" onclick="pick(this)">Joyfully accept</button><button class="seg" data-g="a" onclick="pick(this)">Regretfully decline</button></div>
+<section id="rsvp" class="light mainsec">
+  <div class="reveal">
+    <div class="eyebrow">Kindly Respond</div>
+    <h2 class="rsvp-t">Will you <em>celebrate</em> with us?</h2>
+
+    <div class="glass rsvp" id="rsvpCard">
+
+      <!-- Attendance -->
+      <div class="fld">
+        <span class="lbl">Will you attend?</span>
+        <div class="rrow">
+          <button class="seg active" data-g="a" onclick="pick(this)">Joyfully accept</button>
+          <button class="seg" data-g="a" onclick="pick(this)">Regretfully decline</button>
         </div>
-        <div class="fld"><span class="lbl">Party size</span>
-          <div class="rrow"><button class="seg active" data-g="p" onclick="pick(this)">Just me</button><button class="seg" data-g="p" onclick="pick(this)">My family</button></div>
-        </div>
-        <div class="fld"><label class="lbl" for="gn">Your name</label>
-          <input id="gn" type="text" placeholder="e.g. Thilini Perera" autocomplete="name">
-        </div>
-        <!--div class="fld"><label class="lbl" for="meal">Meal preference</label>
-          <select id="meal"><option>Non-Vegetarian</option><option>Vegetarian</option></select>
-        </div-->
-        <button class="submit" onclick="submitRsvp()">Send RSVP</button>
       </div>
+
+      <!-- Party -->
+      <div class="fld">
+        <span class="lbl">Party size</span>
+        <div class="rrow">
+          <button class="seg active" data-g="p" onclick="setParty(this)">Just me</button>
+          <button class="seg" data-g="p" onclick="setParty(this)">My family</button>
+        </div>
+      </div>
+
+      <!-- Main Name -->
+      <div class="fld">
+        <label class="lbl" for="gn">Your name</label>
+        <input
+          id="gn"
+          type="text"
+          placeholder="e.g. Thilini Perera"
+          autocomplete="name">
+      </div>
+
+      <!-- Family Members -->
+      <div class="fld" id="familyBox" style="display:none;">
+
+        <label class="lbl">Family Members</label>
+
+        <div id="familyMembers"></div>
+
+        <button
+          type="button"
+          class="add-member"
+          onclick="addFamilyMember()">
+          + Add Family Member
+        </button>
+
+      </div>
+
+      <button class="submit" onclick="submitRsvp()">
+        Send RSVP
+      </button>
+
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- FOOTER -->
   <section id="footer" class="mainsec footer">
@@ -873,24 +952,137 @@ tick();setInterval(tick,1000);
 
 function pick(b){document.querySelectorAll('.seg[data-g="'+b.dataset.g+'"]').forEach(function(s){s.classList.remove('active');});b.classList.add('active');}
 /* ===== RSVP delivery ===== paste your form endpoint below (see instructions) ===== */
-var RSVP_ENDPOINT="https://formspree.io/f/xrewwwpe";      /* Formspree endpoint */
-var RSVP_ACCESS_KEY="";    /* ONLY for Web3Forms: paste your access key; leave "" for Formspree/Getform */
-function activeSeg(g){var el=document.querySelector('.seg.active[data-g="'+g+'"]');return el?el.textContent.trim():'';}
-function submitRsvp(){
-  var name=(document.getElementById('gn').value||'').trim()||'Guest';
-  var attending=activeSeg('a'), party=activeSeg('p');
+/* ===== RSVP delivery ===== */
+var RSVP_ENDPOINT = "https://formspree.io/f/xrewwwpe";
+var RSVP_ACCESS_KEY = "";
 
-  var card=document.getElementById('rsvpCard');
-  function thanks(){card.innerHTML='<div class="thx"><div class="h">♥</div><p>Thank you, '+name+'!</p><div style="font-style:italic;color:var(--ink-soft);margin-top:6px">Your RSVP has been received.</div></div>';}
-  if(!RSVP_ENDPOINT){thanks();return;}
-  var btn=card.querySelector('.submit');if(btn){btn.textContent='Sending...';btn.disabled=true;}
-  var fd=new FormData();
-  fd.append('name',name);fd.append('attending',attending);fd.append('party',party);
-  fd.append('_subject','New wedding RSVP: '+name);
-  if(RSVP_ACCESS_KEY)fd.append('access_key',RSVP_ACCESS_KEY);
-  fetch(RSVP_ENDPOINT,{method:'POST',body:fd,headers:{'Accept':'application/json'}})
-    .then(function(){thanks();})
-    .catch(function(){thanks();});
+/* Return active button text */
+function activeSeg(g){
+  var el = document.querySelector('.seg.active[data-g="'+g+'"]');
+  return el ? el.textContent.trim() : '';
+}
+
+/* Called when Party Size buttons are clicked */
+function setParty(btn){
+
+  // Keep your existing segmented button behaviour
+  pick(btn);
+
+  var isFamily = btn.textContent.trim() === "My family";
+
+  document.getElementById("familyBox").style.display =
+      isFamily ? "block" : "none";
+
+  if(!isFamily){
+      document.getElementById("familyMembers").innerHTML = "";
+  }
+
+}
+
+/* Add a new family member field */
+function addFamilyMember(){
+
+    var wrapper = document.createElement("div");
+    wrapper.className = "family-row";
+
+    wrapper.innerHTML = `
+        <input
+            type="text"
+            class="family-name"
+            placeholder="Family member name">
+
+        <button
+            type="button"
+            class="remove-member">
+            ✕
+        </button>
+    `;
+
+    wrapper.querySelector(".remove-member").onclick = function(){
+        wrapper.remove();
+    };
+
+    document.getElementById("familyMembers").appendChild(wrapper);
+
+}
+
+/* Submit RSVP */
+function submitRsvp(){
+
+  var name = (document.getElementById('gn').value || '').trim() || 'Guest';
+
+  var attending = activeSeg('a');
+  var party = activeSeg('p');
+
+  /* Collect family member names */
+  var familyNames = [];
+
+  document.querySelectorAll(".family-name").forEach(function(input){
+
+      if(input.value.trim() !== ""){
+          familyNames.push(input.value.trim());
+      }
+
+  });
+
+  var familyList = familyNames.join(", ");
+
+  var card = document.getElementById('rsvpCard');
+
+  function thanks(){
+
+      card.innerHTML =
+      '<div class="thx">'+
+      '<div class="h">♥</div>'+
+      '<p>Thank you, '+name+'!</p>'+
+      '<div style="font-style:italic;color:var(--ink-soft);margin-top:6px">'+
+      'Your RSVP has been received.'+
+      '</div>'+
+      '</div>';
+
+  }
+
+  if(!RSVP_ENDPOINT){
+      thanks();
+      return;
+  }
+
+  var btn = card.querySelector('.submit');
+
+  if(btn){
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+  }
+
+  var fd = new FormData();
+
+  fd.append('name', name);
+  fd.append('attending', attending);
+  fd.append('party', party);
+
+  /* NEW */
+  fd.append('family_members', familyList);
+
+  fd.append('_subject', 'New wedding RSVP: ' + name);
+
+  if(RSVP_ACCESS_KEY){
+      fd.append('access_key', RSVP_ACCESS_KEY);
+  }
+
+  fetch(RSVP_ENDPOINT,{
+      method:'POST',
+      body:fd,
+      headers:{
+          'Accept':'application/json'
+      }
+  })
+  .then(function(){
+      thanks();
+  })
+  .catch(function(){
+      thanks();
+  });
+
 }
 </script>
 </body>
