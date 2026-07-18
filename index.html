@@ -557,6 +557,9 @@ body.at-footer .scroll-indicator{
 .rsvp .seg.active{background:linear-gradient(180deg,var(--g4),var(--g3));color:#eafff1;border-color:transparent;box-shadow:0 8px 18px rgba(18,63,40,.3);}
 .rsvp input,.rsvp select{width:100%;padding:15px 16px;border-radius:14px;border:1px solid rgba(30,51,39,.18);background:rgba(255,255,255,.72);font-family:var(--serif);font-size:16px;color:var(--ink);}
 .rsvp input:focus,.rsvp select:focus{outline:none;border-color:var(--gold-1);box-shadow:0 0 0 3px rgba(217,180,95,.2);}
+.rsvp input.error{border-color:#d9534f;box-shadow:0 0 0 3px rgba(217,83,79,.18);}
+.rsvp .err-msg{display:none;color:#d9534f;font-family:var(--sans);font-size:12px;margin:-8px 0 13px;}
+.rsvp .err-msg.show{display:block;}
 .add-member{
   margin-top:14px;
   padding:10px 18px;
@@ -882,7 +885,9 @@ body.at-footer .scroll-indicator{
           id="gn"
           type="text"
           placeholder="e.g. Thilini Perera"
-          autocomplete="name">
+          autocomplete="name"
+          required>
+        <div class="err-msg" id="gnErr">Please enter your name.</div>
       </div>
 
       <!-- Family Members -->
@@ -1174,7 +1179,19 @@ function addFamilyMember(){
 /* Submit RSVP */
 function submitRsvp(){
 
-  var name = (document.getElementById('gn').value || '').trim() || 'Guest';
+  var nameInput = document.getElementById('gn');
+  var nameErr = document.getElementById('gnErr');
+  var name = (nameInput.value || '').trim();
+
+  if(!name){
+      nameInput.classList.add('error');
+      if(nameErr) nameErr.classList.add('show');
+      nameInput.focus();
+      return;
+  } else {
+      nameInput.classList.remove('error');
+      if(nameErr) nameErr.classList.remove('show');
+  }
 
   var attending = activeSeg('a');
   var party = activeSeg('p');
@@ -1254,6 +1271,19 @@ window.addEventListener("scroll", () => {
         document.body.classList.add("scrolled");
     }
 });
+
+(function(){
+    var gnInput = document.getElementById('gn');
+    if(gnInput){
+        gnInput.addEventListener('input', function(){
+            if(gnInput.value.trim()){
+                gnInput.classList.remove('error');
+                var e = document.getElementById('gnErr');
+                if(e) e.classList.remove('show');
+            }
+        });
+    }
+})();
 
 /* Hide the scroll indicator once the footer section scrolls into view */
 (function(){
