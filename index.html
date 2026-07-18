@@ -33,6 +33,88 @@ html{scroll-behavior:smooth;color-scheme:only light;}
 body{font-family:var(--serif);background:#020805;color:var(--ink);overflow-x:hidden;color-scheme:only light;}
 .phone{position:relative;max-width:452px;margin:0 auto;min-height:100vh;background:var(--g1);overflow:hidden;box-shadow:0 0 110px rgba(0,0,0,.75);color-scheme:only light;}
 section{position:relative;z-index:2;padding:78px 32px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;color-scheme:only light;}
+
+/* ==========================
+   Scroll Indicator
+========================== */
+
+.scroll-indicator{
+    position:fixed;
+    right:18px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:999;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    pointer-events:none;
+    opacity:.85;
+    animation:fadeFloat 2.5s ease-in-out infinite;
+}
+
+.scroll-indicator span{
+    writing-mode:vertical-rl;
+    text-orientation:mixed;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    color:var(--gold-3);
+}
+
+.scroll-line{
+    width:2px;
+    height:70px;
+    background:rgba(255,255,255,.18);
+    position:relative;
+    overflow:hidden;
+    border-radius:2px;
+}
+
+.scroll-line::after{
+    content:"";
+    position:absolute;
+    left:0;
+    top:-22px;
+    width:100%;
+    height:22px;
+    background:linear-gradient(
+        to bottom,
+        transparent,
+        var(--gold-3),
+        transparent
+    );
+    animation:scrollMove 1.6s infinite;
+}
+
+@keyframes scrollMove{
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(92px);
+    }
+}
+
+@keyframes fadeFloat{
+    0%,100%{
+        opacity:.55;
+        transform:translateY(-50%);
+    }
+    50%{
+        opacity:1;
+        transform:translateY(calc(-50% - 6px));
+    }
+}
+
+/* Hide after user starts scrolling */
+body.scrolled .scroll-indicator{
+    opacity:0;
+    transition:.5s;
+}
+
+
 /* stage gating: landing -> envelope -> full invitation */
 body.s-landing #envelope, body.s-landing .mainsec,
 body.s-envelope #landing, body.s-envelope .mainsec,
@@ -120,85 +202,7 @@ body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
 .env.open .letter-in{opacity:1;}
 @media(prefers-reduced-motion:reduce){.env,.seal .glint{animation:none!important;}}
 
-/* ==========================
-   Scroll Indicator
-========================== */
 
-.scroll-indicator{
-    position:fixed;
-    right:18px;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:999;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-    pointer-events:none;
-    opacity:.85;
-    animation:fadeFloat 2.5s ease-in-out infinite;
-}
-
-.scroll-indicator span{
-    writing-mode:vertical-rl;
-    text-orientation:mixed;
-    font-family:var(--sans);
-    font-size:10px;
-    letter-spacing:.35em;
-    text-transform:uppercase;
-    color:var(--gold-3);
-}
-
-.scroll-line{
-    width:2px;
-    height:70px;
-    background:rgba(255,255,255,.18);
-    position:relative;
-    overflow:hidden;
-    border-radius:2px;
-}
-
-.scroll-line::after{
-    content:"";
-    position:absolute;
-    left:0;
-    top:-22px;
-    width:100%;
-    height:22px;
-    background:linear-gradient(
-        to bottom,
-        transparent,
-        var(--gold-3),
-        transparent
-    );
-    animation:scrollMove 1.6s infinite;
-}
-
-@keyframes scrollMove{
-    from{
-        transform:translateY(0);
-    }
-    to{
-        transform:translateY(92px);
-    }
-}
-
-@keyframes fadeFloat{
-    0%,100%{
-        opacity:.55;
-        transform:translateY(-50%);
-    }
-    50%{
-        opacity:1;
-        transform:translateY(calc(-50% - 6px));
-    }
-}
-
-/* Hide after user starts scrolling */
-body.scrolled .scroll-indicator{
-    opacity:0;
-    transition:.5s;
-}
 
 /* ---------- 3 · INVITATION ---------- */
 #invitation{color:var(--ivory-1);}
