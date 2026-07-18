@@ -141,7 +141,15 @@ body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
     align-items:center;
     gap:10px;
     pointer-events:none;
-    opacity:.85;
+
+    padding:12px 8px;
+    border-radius:30px;
+
+    background:rgba(20,20,20,.28);
+    backdrop-filter:blur(10px);
+
+    border:1px solid rgba(255,255,255,.25);
+    /*opacity:.85;*/
     animation:fadeFloat 2.5s ease-in-out infinite;
 }
 
@@ -149,43 +157,50 @@ body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
     writing-mode:vertical-rl;
     text-orientation:mixed;
     font-family:var(--sans);
-    font-size:10px;
-    letter-spacing:.35em;
+    font-size:13px;
+    letter-spacing:.18em;
+    font-weight:700;
     text-transform:uppercase;
-    color:var(--gold-3);
+    /*color:var(--gold-3);*/
+    color:#ffffff;
+
+    text-shadow:
+        0 0 8px rgba(0,0,0,.5),
+        0 0 18px rgba(255,255,255,.2);
 }
 
 .scroll-line{
-    width:2px;
-    height:70px;
-    background:rgba(255,255,255,.18);
+    width:3px;
+    height:80px;
+    background:rgba(255,255,255,.25);
     position:relative;
     overflow:hidden;
-    border-radius:2px;
+    border-radius:999px;
 }
 
 .scroll-line::after{
     content:"";
     position:absolute;
     left:0;
-    top:-22px;
+    /*top:-22px;*/
     width:100%;
-    height:22px;
+    height:28px;
     background:linear-gradient(
         to bottom,
         transparent,
-        var(--gold-3),
+        /*var(--gold-3),*/
+        #FFD86A,
         transparent
     );
-    animation:scrollMove 1.6s infinite;
+    animation:scrollMove 1.5s infinite;
 }
 
 @keyframes scrollMove{
     from{
-        transform:translateY(0);
+        transform:translateY(-28px);
     }
     to{
-        transform:translateY(92px);
+        transform:translateY(80px);
     }
 }
 
