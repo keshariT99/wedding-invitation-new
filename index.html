@@ -34,6 +34,52 @@ body{font-family:var(--serif);background:#020805;color:var(--ink);overflow-x:hid
 .phone{position:relative;max-width:452px;margin:0 auto;min-height:100vh;background:var(--g1);overflow:hidden;box-shadow:0 0 110px rgba(0,0,0,.75);color-scheme:only light;}
 section{position:relative;z-index:2;padding:78px 32px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;color-scheme:only light;}
 
+
+
+
+/* stage gating: landing -> envelope -> full invitation */
+body.s-landing #envelope, body.s-landing .mainsec,
+body.s-envelope #landing, body.s-envelope .mainsec,
+body.s-main #landing, body.s-main #envelope{display:none!important;}
+body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
+.eyebrow{font-family:var(--sans);font-size:11px;letter-spacing:.46em;text-transform:uppercase;margin-bottom:24px;}
+.rule{width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-2),transparent);margin:22px auto;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.8,.2,1);}
+.reveal.in{opacity:1;transform:none;}
+.d1{transition-delay:.12s}.d2{transition-delay:.26s}.d3{transition-delay:.4s}.d4{transition-delay:.54s}
+
+/* ===== cinematic layer (live canvas + optional video) ===== */
+.cine{position:absolute;inset:0;z-index:0;overflow:hidden;background:radial-gradient(120% 90% at 50% -8%,#164a2e 0,var(--g2) 48%,var(--g1) 100%);}
+.cine canvas{position:absolute;inset:0;width:100%;height:100%;}
+.cine video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s ease;}
+.cine video.ready{opacity:.6;}
+.hv2{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease;transform:translateZ(0);backface-visibility:hidden;will-change:opacity;}
+.hv2.ready{opacity:1;}
+#invitation .cine video.ready{opacity:1;}
+#envelope .cine video.ready{opacity:.5;}
+#reveal .hv2.ready{opacity:.94;}
+.cine .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,19,12,.5),rgba(5,19,12,.24) 42%,rgba(5,19,12,.8));}
+/* courtyard entrance scene */
+.court{position:absolute;inset:0;overflow:hidden;}
+.court-svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
+@keyframes swayL{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(1.4deg)}}
+@keyframes swayR{0%,100%{transform:rotate(2.2deg)}50%{transform:rotate(-1.4deg)}}
+.court .palm{transform-box:fill-box;transform-origin:bottom center;}
+.court .palm.l{animation:swayL 6.5s ease-in-out infinite;}
+.court .palm.r{animation:swayR 7.5s ease-in-out infinite;}
+@keyframes rippleA{0%{transform:scale(.35);opacity:.55}100%{transform:scale(1.55);opacity:0}}
+.court .ripple{transform-box:fill-box;transform-origin:center;animation:rippleA 3s ease-out infinite;}
+@keyframes streamA{0%{opacity:0;transform:translateY(-3px) scaleY(.8)}35%{opacity:.8}100%{opacity:0;transform:translateY(9px) scaleY(1.15)}}
+.court .stream{transform-box:fill-box;transform-origin:top center;animation:streamA 1.3s linear infinite;}
+@keyframes rayA{0%,100%{opacity:.10}50%{opacity:.24}}
+.court .ray{mix-blend-mode:screen;animation:rayA 5s ease-in-out infinite;}
+@keyframes shimmerA{0%,100%{opacity:.18}50%{opacity:.42}}
+.court .shimmer{animation:shimmerA 4s ease-in-out infinite;}
+@keyframes petalA{0%{opacity:0;transform:translate(0,-30px) rotate(0)}10%{opacity:1}100%{opacity:.5;transform:translate(-22px,900px) rotate(400deg)}}
+.court .petal2{transform-box:fill-box;transform-origin:center;animation-name:petalA;animation-timing-function:linear;animation-iteration-count:infinite;}
+#invitation .cine .veil{background:linear-gradient(180deg,rgba(5,19,12,.4),rgba(5,19,12,.18) 40%,rgba(5,19,12,.65));}
+
+
 /* ==========================
    Scroll Indicator
 ========================== */
@@ -114,48 +160,6 @@ body.scrolled .scroll-indicator{
     transition:.5s;
 }
 
-
-/* stage gating: landing -> envelope -> full invitation */
-body.s-landing #envelope, body.s-landing .mainsec,
-body.s-envelope #landing, body.s-envelope .mainsec,
-body.s-main #landing, body.s-main #envelope{display:none!important;}
-body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
-.eyebrow{font-family:var(--sans);font-size:11px;letter-spacing:.46em;text-transform:uppercase;margin-bottom:24px;}
-.rule{width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-2),transparent);margin:22px auto;}
-.reveal{opacity:0;transform:translateY(22px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.8,.2,1);}
-.reveal.in{opacity:1;transform:none;}
-.d1{transition-delay:.12s}.d2{transition-delay:.26s}.d3{transition-delay:.4s}.d4{transition-delay:.54s}
-
-/* ===== cinematic layer (live canvas + optional video) ===== */
-.cine{position:absolute;inset:0;z-index:0;overflow:hidden;background:radial-gradient(120% 90% at 50% -8%,#164a2e 0,var(--g2) 48%,var(--g1) 100%);}
-.cine canvas{position:absolute;inset:0;width:100%;height:100%;}
-.cine video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s ease;}
-.cine video.ready{opacity:.6;}
-.hv2{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease;transform:translateZ(0);backface-visibility:hidden;will-change:opacity;}
-.hv2.ready{opacity:1;}
-#invitation .cine video.ready{opacity:1;}
-#envelope .cine video.ready{opacity:.5;}
-#reveal .hv2.ready{opacity:.94;}
-.cine .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,19,12,.5),rgba(5,19,12,.24) 42%,rgba(5,19,12,.8));}
-/* courtyard entrance scene */
-.court{position:absolute;inset:0;overflow:hidden;}
-.court-svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
-@keyframes swayL{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(1.4deg)}}
-@keyframes swayR{0%,100%{transform:rotate(2.2deg)}50%{transform:rotate(-1.4deg)}}
-.court .palm{transform-box:fill-box;transform-origin:bottom center;}
-.court .palm.l{animation:swayL 6.5s ease-in-out infinite;}
-.court .palm.r{animation:swayR 7.5s ease-in-out infinite;}
-@keyframes rippleA{0%{transform:scale(.35);opacity:.55}100%{transform:scale(1.55);opacity:0}}
-.court .ripple{transform-box:fill-box;transform-origin:center;animation:rippleA 3s ease-out infinite;}
-@keyframes streamA{0%{opacity:0;transform:translateY(-3px) scaleY(.8)}35%{opacity:.8}100%{opacity:0;transform:translateY(9px) scaleY(1.15)}}
-.court .stream{transform-box:fill-box;transform-origin:top center;animation:streamA 1.3s linear infinite;}
-@keyframes rayA{0%,100%{opacity:.10}50%{opacity:.24}}
-.court .ray{mix-blend-mode:screen;animation:rayA 5s ease-in-out infinite;}
-@keyframes shimmerA{0%,100%{opacity:.18}50%{opacity:.42}}
-.court .shimmer{animation:shimmerA 4s ease-in-out infinite;}
-@keyframes petalA{0%{opacity:0;transform:translate(0,-30px) rotate(0)}10%{opacity:1}100%{opacity:.5;transform:translate(-22px,900px) rotate(400deg)}}
-.court .petal2{transform-box:fill-box;transform-origin:center;animation-name:petalA;animation-timing-function:linear;animation-iteration-count:infinite;}
-#invitation .cine .veil{background:linear-gradient(180deg,rgba(5,19,12,.4),rgba(5,19,12,.18) 40%,rgba(5,19,12,.65));}
 
 /* two-ring intro on the start screen */
 .rings{display:flex;justify-content:center;margin-bottom:26px;position:relative;z-index:2;}
