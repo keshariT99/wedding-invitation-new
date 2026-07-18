@@ -231,6 +231,11 @@ body.scrolled .scroll-indicator{
     transition:.5s;
 }
 
+/* Hide completely once the footer section is reached */
+body.at-footer .scroll-indicator{
+    display:none!important;
+}
+
 /* ---------- 3 · INVITATION ---------- */
 #invitation{color:var(--ivory-1);}
 #invitation .eyebrow{color:var(--gold-3);}
@@ -1249,6 +1254,18 @@ window.addEventListener("scroll", () => {
         document.body.classList.add("scrolled");
     }
 });
+
+/* Hide the scroll indicator once the footer section scrolls into view */
+(function(){
+    var footerEl = document.getElementById('footer');
+    if(!footerEl) return;
+    var footerObserver = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            document.body.classList.toggle('at-footer', entry.isIntersecting);
+        });
+    }, {threshold: 0.1});
+    footerObserver.observe(footerEl);
+})();
 </script>
 </body>
 </html>
