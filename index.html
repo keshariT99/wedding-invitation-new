@@ -200,6 +200,16 @@ body.s-landing, body.s-envelope{overflow:hidden;height:100vh;}
     }
 }
 
+/* Hide by default */
+.scroll-indicator{
+    display:none;
+}
+
+/* Show only on the main invitation */
+body.s-main .scroll-indicator{
+    display:flex;
+}
+
 /* Hide after user starts scrolling */
 body.scrolled .scroll-indicator{
     opacity:0;
